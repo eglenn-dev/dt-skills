@@ -8,32 +8,42 @@ import { searchCommand } from "./commands/search.js";
 const program = new Command();
 
 program
-  .name("datathink")
-  .description("DataThink AI Skills Registry - browse and install Claude Code skills")
-  .version("0.1.0");
+    .name("datathink")
+    .description(
+        "DataThink AI Skills Registry - browse and install Claude Code skills",
+    )
+    .version("0.1.0");
 
 program
-  .command("list")
-  .alias("ls")
-  .description("List all available skills in the registry")
-  .action(listCommand);
+    .command("list")
+    .alias("ls")
+    .description("List all available skills in the registry")
+    .action(listCommand);
 
 program
-  .command("info <skill>")
-  .description("Show detailed information about a skill")
-  .action(infoCommand);
+    .command("info <skill>")
+    .description("Show detailed information about a skill")
+    .action(infoCommand);
 
 program
-  .command("install <skill>")
-  .alias("i")
-  .description("Install a skill to your local environment")
-  .option("-p, --project", "Install to current project (.claude/skills/) instead of personal (~/.claude/skills/)")
-  .action(installCommand);
+    .command("install <skill>")
+    .alias("i")
+    .description("Install a skill to your local environment")
+    .option(
+        "-p, --project",
+        "Install to current project instead of personal/global",
+    )
+    .option(
+        "-t, --harness <harness>",
+        "Target harness: claude-code, copilot, codex",
+        "claude-code",
+    )
+    .action(installCommand);
 
 program
-  .command("search <query>")
-  .alias("s")
-  .description("Search skills by name or description")
-  .action(searchCommand);
+    .command("search <query>")
+    .alias("s")
+    .description("Search skills by name or description")
+    .action(searchCommand);
 
 program.parse();
