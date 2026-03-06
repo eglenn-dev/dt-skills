@@ -84,7 +84,3 @@ npx dt-skills install code-review --project
 | `npx dt-skills install <skill>` | Install a skill (add `--project` for project-level) |
 
 ---
-
-## About
-
-Built by [Ethan Glenn](https://github.com/eglenn-dev) | [ethanglenn.dev](https://ethanglenn.dev)
