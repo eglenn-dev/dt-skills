@@ -26,16 +26,16 @@ npx dt-skills info code-review
 
 ## Install a Skill
 
-Install a skill to your current project:
+Install a skill to your current project (the default):
 
 ```sh
-npx dt-skills install code-review --project
+npx dt-skills install code-review
 ```
 
 Or install it globally to your personal config:
 
 ```sh
-npx dt-skills install code-review
+npx dt-skills install code-review --global
 ```
 
 ### Choosing a Harness
@@ -44,13 +44,13 @@ By default, skills install for Claude Code. Use `--harness` (or `-t`) to target 
 
 ```sh
 # GitHub Copilot
-npx dt-skills install code-review --project -t copilot
+npx dt-skills install code-review -t copilot
 
 # OpenAI Codex
-npx dt-skills install code-review --project -t codex
+npx dt-skills install code-review -t codex
 
 # OpenCode
-npx dt-skills install code-review --project -t opencode
+npx dt-skills install code-review -t opencode
 ```
 
 ## Where Skills Get Installed
@@ -71,7 +71,7 @@ Some skills bundle related sub-skills that get installed together. For example, 
 npx dt-skills info code-review
 
 # Install the parent and all related skills
-npx dt-skills install code-review --project
+npx dt-skills install code-review
 ```
 
 ## Commands Reference
@@ -81,6 +81,6 @@ npx dt-skills install code-review --project
 | `npx dt-skills list`            | List all available skills                           |
 | `npx dt-skills search <query>`  | Search skills by name or description                |
 | `npx dt-skills info <skill>`    | Show details about a skill                          |
-| `npx dt-skills install <skill>` | Install a skill (add `--project` for project-level) |
+| `npx dt-skills install <skill>` | Install a skill (add `--global` for personal config) |
 
 ---

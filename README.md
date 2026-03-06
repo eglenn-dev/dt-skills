@@ -6,7 +6,7 @@ Browse and install AI skills for Claude Code, GitHub Copilot, OpenAI Codex, and 
 
 ```sh
 npx dt-skills list
-npx dt-skills install code-review --project
+npx dt-skills install code-review
 ```
 
 ## Commands
@@ -47,26 +47,26 @@ npx dt-skills install code-review
 
 | Flag                      | Description                                                             |
 | ------------------------- | ----------------------------------------------------------------------- |
-| `-p, --project`           | Install to the current project instead of your personal/global config   |
+| `-g, --global`            | Install globally (personal config) instead of to the current project    |
 | `-t, --harness <harness>` | Target harness: `claude-code` (default), `copilot`, `codex`, `opencode` |
 
 **Examples:**
 
 ```sh
 # Install to current project for Claude Code (default)
-npx dt-skills install code-review --project
+npx dt-skills install code-review
 
 # Install for GitHub Copilot
-npx dt-skills install code-review --project -t copilot
+npx dt-skills install code-review -t copilot
 
 # Install for OpenAI Codex
-npx dt-skills install code-review --project -t codex
+npx dt-skills install code-review -t codex
 
 # Install for OpenCode
-npx dt-skills install code-review --project -t opencode
+npx dt-skills install code-review -t opencode
 
 # Install globally (personal config)
-npx dt-skills install code-review
+npx dt-skills install code-review --global
 ```
 
 ## Install Locations
@@ -84,7 +84,7 @@ Some skills bundle related skills that get installed together. For example, `cod
 
 ```sh
 npx dt-skills info code-review   # see related skills
-npx dt-skills install code-review --project  # installs all 3
+npx dt-skills install code-review  # installs all 3
 ```
 
 ## License
