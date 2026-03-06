@@ -8,7 +8,7 @@ export function infoCommand(name: string) {
         console.log(chalk.red(`Skill "${name}" not found.`));
         console.log(
             chalk.gray(
-                `Run ${chalk.white("datathink list")} to see available skills.`,
+                `Run ${chalk.white("dt-skills list")} to see available skills.`,
             ),
         );
         process.exitCode = 1;

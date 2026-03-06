@@ -1,12 +1,12 @@
-# DataThink CLI
+# dt-skills CLI
 
-Browse and install AI skills for Claude Code, GitHub Copilot, and OpenAI Codex.
+Browse and install AI skills for Claude Code, GitHub Copilot, OpenAI Codex, and OpenCode.
 
 ## Quick Start
 
 ```sh
-npx datathink list
-npx datathink install code-review --project
+npx dt-skills list
+npx dt-skills install code-review --project
 ```
 
 ## Commands
@@ -16,7 +16,7 @@ npx datathink install code-review --project
 List all available skills in the registry.
 
 ```sh
-npx datathink list
+npx dt-skills list
 ```
 
 ### `search <query>`
@@ -24,7 +24,7 @@ npx datathink list
 Search skills by name or description.
 
 ```sh
-npx datathink search review
+npx dt-skills search review
 ```
 
 ### `info <skill>`
@@ -32,7 +32,7 @@ npx datathink search review
 Show detailed information about a skill, including its instructions, configuration, and related skills.
 
 ```sh
-npx datathink info code-review
+npx dt-skills info code-review
 ```
 
 ### `install <skill>`
@@ -40,30 +40,33 @@ npx datathink info code-review
 Install a skill to your local environment. Skills with related skills will install all of them automatically.
 
 ```sh
-npx datathink install code-review
+npx dt-skills install code-review
 ```
 
 **Options:**
 
-| Flag                      | Description                                                           |
-| ------------------------- | --------------------------------------------------------------------- |
-| `-p, --project`           | Install to the current project instead of your personal/global config |
-| `-t, --harness <harness>` | Target harness: `claude-code` (default), `copilot`, `codex`           |
+| Flag                      | Description                                                             |
+| ------------------------- | ----------------------------------------------------------------------- |
+| `-p, --project`           | Install to the current project instead of your personal/global config   |
+| `-t, --harness <harness>` | Target harness: `claude-code` (default), `copilot`, `codex`, `opencode` |
 
 **Examples:**
 
 ```sh
 # Install to current project for Claude Code (default)
-npx datathink install code-review --project
+npx dt-skills install code-review --project
 
 # Install for GitHub Copilot
-npx datathink install code-review --project -t copilot
+npx dt-skills install code-review --project -t copilot
 
 # Install for OpenAI Codex
-npx datathink install code-review --project -t codex
+npx dt-skills install code-review --project -t codex
+
+# Install for OpenCode
+npx dt-skills install code-review --project -t opencode
 
 # Install globally (personal config)
-npx datathink install code-review
+npx dt-skills install code-review
 ```
 
 ## Install Locations
@@ -73,14 +76,15 @@ npx datathink install code-review
 | Claude Code | `.claude/skills/<skill>/SKILL.md`              | `~/.claude/skills/<skill>/SKILL.md`              |
 | Copilot     | `.github/instructions/<skill>.instructions.md` | `~/.github/instructions/<skill>.instructions.md` |
 | Codex       | `.codex/agents/<skill>.md`                     | `~/.codex/instructions.md` (appended)            |
+| OpenCode    | `.opencode/skills/<skill>/SKILL.md`            | `~/.config/opencode/skills/<skill>/SKILL.md`     |
 
 ## Related Skills
 
 Some skills bundle related skills that get installed together. For example, `code-review` ships with `review-pr` and `review-diff`. When you install the parent skill, all related skills are installed as separate, independent skills.
 
 ```sh
-npx datathink info code-review   # see related skills
-npx datathink install code-review --project  # installs all 3
+npx dt-skills info code-review   # see related skills
+npx dt-skills install code-review --project  # installs all 3
 ```
 
 ## License

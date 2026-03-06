@@ -10,11 +10,7 @@ export interface Harness {
     install: (skill: Skill, opts: { project: boolean }) => string[];
 }
 
-function copyDir(
-    src: string,
-    dest: string,
-    excludeDirs: string[] = [],
-) {
+function copyDir(src: string, dest: string, excludeDirs: string[] = []) {
     fs.mkdirSync(dest, { recursive: true });
     for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
         if (excludeDirs.includes(entry.name)) continue;
@@ -143,6 +139,36 @@ const codex: Harness = {
     },
 };
 
+// ---------------------------------------------------------------------------
+// OpenCode
+// Personal: ~/.config/opencode/skills/<skill>/SKILL.md
+// Project:  .opencode/skills/<skill>/SKILL.md
+// ---------------------------------------------------------------------------
+const openCode: Harness = {
+    name: "OpenCode",
+    usageHint(skill) {
+        if (skill.frontmatter["disable-model-invocation"]) {
+            return `Use in OpenCode: /${skill.name}`;
+        }
+        return `Use in OpenCode: /${skill.name} or let OpenCode invoke it automatically`;
+    },
+    install(skill, { project }) {
+        const base = project
+            ? path.join(process.cwd(), ".opencode", "skills")
+            : path.join(home, ".config", "opencode", "skills");
+        const dest = path.join(base, skill.id);
+        overwriteDir(skill.registryPath, dest, ["related-skills"]);
+
+        const paths = [dest];
+        for (const related of skill.relatedSkills) {
+            const relDest = path.join(base, related.id);
+            overwriteDir(related.registryPath, relDest);
+            paths.push(relDest);
+        }
+        return paths;
+    },
+};
+
 function writeCodexAgentFile(dest: string, skill: Skill) {
     const lines: string[] = [];
     lines.push(`# ${skill.name}`);
@@ -172,7 +198,7 @@ function appendCodexGlobal(dest: string, skill: Skill) {
             fs.appendFileSync(dest, section, "utf-8");
         }
     } else {
-        fs.writeFileSync(dest, `# DataThink Skills${section}`, "utf-8");
+        fs.writeFileSync(dest, `# dt-skills Skills${section}`, "utf-8");
     }
 }
 
@@ -180,11 +206,7 @@ function escapeRegex(str: string) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function overwriteDir(
-    src: string,
-    dest: string,
-    excludeDirs: string[] = [],
-) {
+function overwriteDir(src: string, dest: string, excludeDirs: string[] = []) {
     if (fs.existsSync(dest)) {
         fs.rmSync(dest, { recursive: true });
     }
@@ -195,6 +217,7 @@ export const harnesses: Record<string, Harness> = {
     "claude-code": claudeCode,
     copilot,
     codex,
+    opencode: openCode,
 };
 
 export const harnessNames = Object.keys(harnesses);

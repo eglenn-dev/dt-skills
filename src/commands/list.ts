@@ -10,7 +10,7 @@ export function listCommand() {
     }
 
     console.log(
-        chalk.bold(`\nDataThink Skills Registry (${skills.length} skills)\n`),
+        chalk.bold(`\ndt-skills Skills Registry (${skills.length} skills)\n`),
     );
     console.log(chalk.gray("─".repeat(60)));
 
@@ -29,7 +29,7 @@ export function listCommand() {
 
     console.log(
         chalk.gray(
-            `Run ${chalk.white("datathink info <skill>")} for details or ${chalk.white("datathink install <skill>")} to install.`,
+            `Run ${chalk.white("dt-skills info <skill>")} for details or ${chalk.white("dt-skills install <skill>")} to install.`,
         ),
     );
 }

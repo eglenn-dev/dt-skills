@@ -8,9 +8,9 @@ import { searchCommand } from "./commands/search.js";
 const program = new Command();
 
 program
-    .name("datathink")
+    .name("dt-skills")
     .description(
-        "DataThink AI Skills Registry - browse and install Claude Code skills",
+        "dt-skills AI Skills Registry - browse and install Claude Code skills",
     )
     .version("0.1.0");
 
@@ -35,7 +35,7 @@ program
     )
     .option(
         "-t, --harness <harness>",
-        "Target harness: claude-code, copilot, codex",
+        "Target harness: claude-code, copilot, codex, opencode",
         "claude-code",
     )
     .action(installCommand);
