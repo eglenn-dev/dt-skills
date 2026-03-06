@@ -2,12 +2,10 @@
 name: pr-summary
 description: Generate a pull request summary from the current branch changes
 disable-model-invocation: true
-context: fork
-agent: Explore
-allowed-tools: Bash(gh *), Bash(git *)
 ---
 
 ## Pull request context
+
 - PR diff: !`git diff main...HEAD`
 - Changed files: !`git diff main...HEAD --name-only`
 - Commit log: !`git log main...HEAD --oneline`
