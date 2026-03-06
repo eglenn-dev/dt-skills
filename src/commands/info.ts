@@ -55,6 +55,16 @@ export function infoCommand(name: string) {
         }
     }
 
+    // Show related skills
+    if (skill.relatedSkills.length > 0) {
+        console.log(`\n${chalk.bold("Related skills:")}`);
+        for (const related of skill.relatedSkills) {
+            console.log(
+                `  ${chalk.gray("•")} ${chalk.cyan(related.name)} - ${related.description}`,
+            );
+        }
+    }
+
     // Show skill content
     console.log(`\n${chalk.bold("Instructions:")}`);
     console.log(chalk.gray("─".repeat(60)));

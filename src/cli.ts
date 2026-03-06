@@ -30,8 +30,8 @@ program
     .alias("i")
     .description("Install a skill to your local environment")
     .option(
-        "-p, --project",
-        "Install to current project instead of personal/global",
+        "-g, --global",
+        "Install globally instead of to the current project",
     )
     .option(
         "-t, --harness <harness>",

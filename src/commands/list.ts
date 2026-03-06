@@ -18,7 +18,11 @@ export function listCommand() {
         const invocable = skill.frontmatter["disable-model-invocation"]
             ? chalk.gray(" (manual only)")
             : "";
-        console.log(`  ${chalk.cyan(skill.name)}${invocable}`);
+        const related =
+            skill.relatedSkills.length > 0
+                ? chalk.magenta(` (+${skill.relatedSkills.length} related)`)
+                : "";
+        console.log(`  ${chalk.cyan(skill.name)}${invocable}${related}`);
         console.log(`  ${chalk.gray(skill.description)}`);
         console.log();
     }

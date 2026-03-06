@@ -1,5 +1,5 @@
 {
-    "name": "@datathink/cli",
+    "name": "datathink",
     "version": "0.1.2",
     "description": "DataThink AI Skills Registry - browse and install agent skills",
     "type": "module",

@@ -17,6 +17,8 @@ export interface Skill {
     frontmatter: Record<string, unknown>;
     /** List of supporting files relative to the skill directory */
     files: string[];
+    /** Related skills bundled with this skill */
+    relatedSkills: Skill[];
 }
 
 function getRegistryDir(): string {
@@ -26,9 +28,14 @@ function getRegistryDir(): string {
     return path.join(packageRoot, "skills");
 }
 
-function listFiles(dir: string, base: string = ""): string[] {
+function listFiles(
+    dir: string,
+    base: string = "",
+    excludeDirs: string[] = [],
+): string[] {
     const results: string[] = [];
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        if (excludeDirs.includes(entry.name)) continue;
         const rel = path.join(base, entry.name);
         if (entry.isDirectory()) {
             results.push(...listFiles(path.join(dir, entry.name), rel));
@@ -46,7 +53,20 @@ export function loadSkill(skillDir: string): Skill | null {
     const raw = fs.readFileSync(skillMd, "utf-8");
     const { data, content } = matter(raw);
     const id = path.basename(skillDir);
-    const allFiles = listFiles(skillDir);
+    const allFiles = listFiles(skillDir, "", ["related-skills"]);
+
+    // Load related skills from related-skills/ subdirectory
+    const relatedSkills: Skill[] = [];
+    const relatedDir = path.join(skillDir, "related-skills");
+    if (fs.existsSync(relatedDir)) {
+        for (const entry of fs.readdirSync(relatedDir, {
+            withFileTypes: true,
+        })) {
+            if (!entry.isDirectory()) continue;
+            const related = loadSkill(path.join(relatedDir, entry.name));
+            if (related) relatedSkills.push(related);
+        }
+    }
 
     return {
         id,
@@ -62,6 +82,7 @@ export function loadSkill(skillDir: string): Skill | null {
         content: content.trim(),
         frontmatter: data,
         files: allFiles,
+        relatedSkills,
     };
 }
 

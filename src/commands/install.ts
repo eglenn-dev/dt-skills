@@ -4,7 +4,7 @@ import { harnesses, harnessNames } from "../harnesses.js";
 
 export function installCommand(
     name: string,
-    options: { project?: boolean; harness?: string },
+    options: { global?: boolean; harness?: string },
 ) {
     const skill = findSkill(name);
 
@@ -29,17 +29,28 @@ export function installCommand(
         return;
     }
 
-    const project = options.project ?? false;
+    const project = !(options.global ?? false);
     const scope = project ? "project" : "personal";
 
-    const dest = harness.install(skill, { project });
+    const paths = harness.install(skill, { project });
+    const relatedCount = skill.relatedSkills.length;
 
-    console.log(
-        chalk.green(
-            `\nInstalled "${skill.name}" for ${harness.name} (${scope}).`,
-        ),
-    );
-    console.log(chalk.gray(`  ${dest}`));
+    if (relatedCount > 0) {
+        console.log(
+            chalk.green(
+                `\nInstalled "${skill.name}" + ${relatedCount} related skill${relatedCount === 1 ? "" : "s"} for ${harness.name} (${scope}).`,
+            ),
+        );
+    } else {
+        console.log(
+            chalk.green(
+                `\nInstalled "${skill.name}" for ${harness.name} (${scope}).`,
+            ),
+        );
+    }
+    for (const p of paths) {
+        console.log(chalk.gray(`  ${p}`));
+    }
     console.log();
     console.log(harness.usageHint(skill));
     console.log();

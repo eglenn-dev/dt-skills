@@ -6,13 +6,18 @@ export interface Harness {
     name: string;
     /** How to use the skill after install */
     usageHint: (skill: Skill) => string;
-    /** Install the skill, returns the path where it was installed */
-    install: (skill: Skill, opts: { project: boolean }) => string;
+    /** Install the skill, returns the paths where it was installed */
+    install: (skill: Skill, opts: { project: boolean }) => string[];
 }
 
-function copyDir(src: string, dest: string) {
+function copyDir(
+    src: string,
+    dest: string,
+    excludeDirs: string[] = [],
+) {
     fs.mkdirSync(dest, { recursive: true });
     for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+        if (excludeDirs.includes(entry.name)) continue;
         const srcPath = path.join(src, entry.name);
         const destPath = path.join(dest, entry.name);
         if (entry.isDirectory()) {
@@ -21,6 +26,18 @@ function copyDir(src: string, dest: string) {
             fs.copyFileSync(srcPath, destPath);
         }
     }
+}
+
+function writeCopilotFile(dest: string, skill: Skill) {
+    const lines: string[] = [];
+    lines.push("---");
+    lines.push(`applyTo: "**"`);
+    lines.push("---");
+    lines.push("");
+    lines.push(`# ${skill.name}`);
+    lines.push("");
+    lines.push(skill.content);
+    fs.writeFileSync(dest, lines.join("\n"), "utf-8");
 }
 
 const home = process.env.HOME || "~";
@@ -43,8 +60,15 @@ const claudeCode: Harness = {
             ? path.join(process.cwd(), ".claude", "skills")
             : path.join(home, ".claude", "skills");
         const dest = path.join(base, skill.id);
-        overwriteDir(skill.registryPath, dest);
-        return dest;
+        overwriteDir(skill.registryPath, dest, ["related-skills"]);
+
+        const paths = [dest];
+        for (const related of skill.relatedSkills) {
+            const relDest = path.join(base, related.id);
+            overwriteDir(related.registryPath, relDest);
+            paths.push(relDest);
+        }
+        return paths;
     },
 };
 
@@ -67,17 +91,15 @@ const copilot: Harness = {
         const dest = path.join(base, `${skill.id}.instructions.md`);
 
         // Convert to Copilot instruction format
-        const lines: string[] = [];
-        lines.push("---");
-        lines.push(`applyTo: "**"`);
-        lines.push("---");
-        lines.push("");
-        lines.push(`# ${skill.name}`);
-        lines.push("");
-        lines.push(skill.content);
+        writeCopilotFile(dest, skill);
 
-        fs.writeFileSync(dest, lines.join("\n"), "utf-8");
-        return dest;
+        const paths = [dest];
+        for (const related of skill.relatedSkills) {
+            const relDest = path.join(base, `${related.id}.instructions.md`);
+            writeCopilotFile(relDest, related);
+            paths.push(relDest);
+        }
+        return paths;
     },
 };
 
@@ -96,58 +118,77 @@ const codex: Harness = {
             // Install as a scoped agent file in .codex/agents/
             const base = path.join(process.cwd(), ".codex", "agents");
             fs.mkdirSync(base, { recursive: true });
+
             const dest = path.join(base, `${skill.id}.md`);
+            writeCodexAgentFile(dest, skill);
 
-            const lines: string[] = [];
-            lines.push(`# ${skill.name}`);
-            lines.push("");
-            lines.push(skill.content);
-
-            fs.writeFileSync(dest, lines.join("\n"), "utf-8");
-            return dest;
+            const paths = [dest];
+            for (const related of skill.relatedSkills) {
+                const relDest = path.join(base, `${related.id}.md`);
+                writeCodexAgentFile(relDest, related);
+                paths.push(relDest);
+            }
+            return paths;
         } else {
             // Append to global instructions
             const dest = path.join(home, ".codex", "instructions.md");
             fs.mkdirSync(path.dirname(dest), { recursive: true });
 
-            const section = `\n\n## ${skill.name}\n\n${skill.content}\n`;
-
-            if (fs.existsSync(dest)) {
-                const existing = fs.readFileSync(dest, "utf-8");
-                // Check if already installed
-                if (existing.includes(`## ${skill.name}`)) {
-                    // Replace existing section
-                    const regex = new RegExp(
-                        `## ${escapeRegex(skill.name)}\\n[\\s\\S]*?(?=\\n## |$)`,
-                    );
-                    fs.writeFileSync(
-                        dest,
-                        existing.replace(
-                            regex,
-                            `## ${skill.name}\n\n${skill.content}\n`,
-                        ),
-                        "utf-8",
-                    );
-                } else {
-                    fs.appendFileSync(dest, section, "utf-8");
-                }
-            } else {
-                fs.writeFileSync(dest, `# DataThink Skills${section}`, "utf-8");
+            const allSkills = [skill, ...skill.relatedSkills];
+            for (const s of allSkills) {
+                appendCodexGlobal(dest, s);
             }
-            return dest;
+            return [dest];
         }
     },
 };
+
+function writeCodexAgentFile(dest: string, skill: Skill) {
+    const lines: string[] = [];
+    lines.push(`# ${skill.name}`);
+    lines.push("");
+    lines.push(skill.content);
+    fs.writeFileSync(dest, lines.join("\n"), "utf-8");
+}
+
+function appendCodexGlobal(dest: string, skill: Skill) {
+    const section = `\n\n## ${skill.name}\n\n${skill.content}\n`;
+
+    if (fs.existsSync(dest)) {
+        const existing = fs.readFileSync(dest, "utf-8");
+        if (existing.includes(`## ${skill.name}`)) {
+            const regex = new RegExp(
+                `## ${escapeRegex(skill.name)}\\n[\\s\\S]*?(?=\\n## |$)`,
+            );
+            fs.writeFileSync(
+                dest,
+                existing.replace(
+                    regex,
+                    `## ${skill.name}\n\n${skill.content}\n`,
+                ),
+                "utf-8",
+            );
+        } else {
+            fs.appendFileSync(dest, section, "utf-8");
+        }
+    } else {
+        fs.writeFileSync(dest, `# DataThink Skills${section}`, "utf-8");
+    }
+}
 
 function escapeRegex(str: string) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function overwriteDir(src: string, dest: string) {
+function overwriteDir(
+    src: string,
+    dest: string,
+    excludeDirs: string[] = [],
+) {
     if (fs.existsSync(dest)) {
         fs.rmSync(dest, { recursive: true });
     }
-    copyDir(src, dest);
+    copyDir(src, dest, excludeDirs);
 }
 
 export const harnesses: Record<string, Harness> = {
