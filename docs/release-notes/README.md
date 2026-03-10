@@ -1,5 +1,11 @@
 # Release Notes
 
+## v0.1.4 — 2026-03-10
+
+### Changes
+
+- Minor updates to package information
+
 ## v0.1.3 — 2026-03-10
 
 ### Highlights

@@ -1,7 +1,7 @@
 {
     "name": "dt-skills",
-    "version": "0.1.3",
-    "description": "DataThink AI Skills Registry - browse and install agent skills",
+    "version": "0.1.4",
+    "description": "AI Skills Registry - browse and install agent skills",
     "type": "module",
     "bin": {
         "dt-skills": "dist/cli.js"
