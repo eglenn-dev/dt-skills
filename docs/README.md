@@ -76,11 +76,13 @@ npx dt-skills install code-review
 
 ## Commands Reference
 
-| Command                         | Description                                         |
-| ------------------------------- | --------------------------------------------------- |
-| `npx dt-skills list`            | List all available skills                           |
-| `npx dt-skills search <query>`  | Search skills by name or description                |
-| `npx dt-skills info <skill>`    | Show details about a skill                          |
+| Command                         | Description                                          |
+| ------------------------------- | ---------------------------------------------------- |
+| `npx dt-skills list`            | List all available skills                            |
+| `npx dt-skills search <query>`  | Search skills by name or description                 |
+| `npx dt-skills info <skill>`    | Show details about a skill                           |
 | `npx dt-skills install <skill>` | Install a skill (add `--global` for personal config) |
 
 ---
+
+[Release Notes](release-notes/README.md)

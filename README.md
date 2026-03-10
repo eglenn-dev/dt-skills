@@ -2,6 +2,8 @@
 
 Browse and install AI skills for Claude Code, GitHub Copilot, OpenAI Codex, and OpenCode.
 
+[Guide](https://eglenn-dev.github.io/dt-skills/)
+
 ## Quick Start
 
 ```sh

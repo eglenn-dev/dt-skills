@@ -1,5 +1,26 @@
 # Release Notes
 
+## v0.1.3 — 2026-03-10
+
+### Highlights
+
+Two new skills added to the registry: `code-simplifier` for refining code clarity and maintainability, and `frontend-design` for creating distinctive, production-grade UI.
+
+```
+npx dt-skills install code-simplifier
+```
+
+```
+npx dt-skills install frontend-design
+```
+
+### Changes
+
+- Added `code-simplifier` skill — autonomously simplifies recently modified code for clarity, consistency, and maintainability while preserving functionality
+- Added `frontend-design` skill — guides creation of visually striking, production-grade frontend interfaces with bold aesthetic direction
+
+---
+
 ## v0.1.2 — 2026-03-06
 
 ### Highlights
